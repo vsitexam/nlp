@@ -1,0 +1,648 @@
+##### PRACTICAL NO.-1 ######
+
+##### Practical 1-A ######
+
+Installation.
+
+##### Practical 1-B ######
+
+##### Aim: Convert the given text to speech. #####
+
+pip install gTTS
+from gtts import gTTS  
+
+pip install playsound
+# !pip install playsound==1.2.2
+from playsound import playsound  
+
+#!pip install wheel setuptools pip --upgrade
+#run the above code if theres an error
+
+text_val = 'Shlok is learning Natural Language Processing'
+language = 'en'
+
+obj = gTTS(text=text_val, lang=language, slow=False)
+
+obj.save("exam.mp3")  
+
+playsound("exam.mp3")
+
+
+##### Practical 1-C ######
+
+##### Aim: Convert the Speech of .wav audio file to Text. #####
+
+!pip install SpeechRecognition pydub
+import speech_recognition as sr
+
+
+def convert_speech_to_text(file_path):
+    recognizer = sr.Recognizer()
+    
+    with sr.AudioFile(file_path) as source:
+        audio_data = recognizer.record(source)
+        text = recognizer.recognize_google(audio_data)
+        return text
+
+#add file name here
+file_path = ""
+
+text = convert_speech_to_text(file_path)
+
+print(text)
+
+
+
+
+##### PRACTICAL NO.-2 ######
+
+##### Practical 2-A ######
+
+##### Aim: Study of various Corpus – Brown, Inaugural, Reuters, udhr with various methods like filelds, raw, words, sents, categories. #####
+
+import nltk
+from nltk.corpus import brown
+nltk.download('brown')
+print('File ids of brown corpus\n',brown.fileids())
+ca01 = brown.words('ca01')
+#display first few words
+print('\nca01 has following words:\n',ca01)
+#total jumber of words in ca01
+print('\nca01 has',len(ca01),'words')
+
+#categories or files 
+print('\n\nCategories or file in the corpus:\n') 
+print(brown.categories()) 
+
+print('AvgWordLen\tAvgSentenceLen\tno.ofTimesEachWordApperarsOnAvg\t\tFileName') 
+for fileid in brown.fileids(): 
+    num_chars = len(brown.raw(fileid)) 
+    num_words = len(brown.words(fileid)) 
+    num_sents = len(brown.sents(fileid)) 
+    num_vocab = len(set([w.lower() for w in brown.words(fileid)])) 
+    print(int(num_chars/num_words),'\t\t\t',int(num_words/num_sents),'\t\t\t',int(num_words/num_vocab),'\t\t\t',fileid)
+
+
+##### Practical 2-B ######
+
+##### Aim: Create and use your own corpora (plaintext, categorical) #####
+
+import nltk
+from nltk.corpus import PlaintextCorpusReader
+
+corpus_root='D:\\VSIT SEM 4 Practicals\\NLP\\corpus\\'
+#specify corpora folder here
+
+filelist=PlaintextCorpusReader(corpus_root,'.*')
+print('\n File list: \n',filelist.fileids())
+nltk.download('punkt')
+
+print('\n\n Statistics for each text:\n')
+print('AvgWordLen\tAvgSentenceLen\tno.ofTimesEachWordAppearsOnAvg\t\tFileName\n')
+
+for fileid in filelist.fileids():
+    num_chars=len(filelist.raw(fileid))
+    num_words=len(filelist.words(fileid))
+    num_sents=len(filelist.sents(fileid))
+    num_vocab=len(set([w.lower() for w in filelist.words(fileid)]))
+    print(int(num_chars/num_words),'\t\t\t',int(num_words/num_sents),'\t\t\t',int(num_words/num_vocab),'\t\t\t',fileid)
+
+
+##### Practical 2-C ######
+
+##### Aim: Study of tagged corpora with methods like tagged_sents, tagged_words. 
+
+import nltk
+nltk.download('brown')
+tagged_corpus = nltk.corpus.brown
+
+#tagged_sent
+tagged_sents = tagged_corpus.tagged_sents()
+print("Tagged Sentences:")
+for sent in tagged_sents[:2]:
+    print(sent,"\n")
+
+#tagged_words
+tagged_words = tagged_corpus.tagged_words()
+print("\nTagged Words:")
+for word in tagged_words[:10]:
+    print(word)
+
+##### Practical 2-D ######
+
+##### Aim: Write a program to find the most frequent noun tags  #####
+
+import nltk
+from collections import defaultdict
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+
+text = "Shlok is learning Natural Language Processing, he is performing practicals for his examination.Shlok likes to code using Python language"
+text = nltk.word_tokenize(text)
+
+tagged = nltk.pos_tag(text)
+print(tagged)
+
+# Checking if it is a noun or not.
+addNounWords = []
+count=0
+for words in tagged:
+  val = tagged[count][1]
+  if(val == 'NN' or val == 'NNS' or val == 'NNPS' or val == 'NNP'):
+    addNounWords.append(tagged[count][0])
+  count+=1
+print(addNounWords)
+
+temp = defaultdict(int)
+for sub in addNounWords:
+  temp[sub] += 1
+
+res = max(temp, key=temp.get)
+
+print("\nWord with maximum frequency : " + str(res))
+
+##### PRACTICAL NO.-3 ######
+
+##### Practical 3-A ######
+
+##### Aim: Study of Wordnet Dictionary with methods as synsets, definitions, examples, antonyms. #####
+
+import nltk
+nltk.download('omw-1.4')
+
+from nltk.corpus import wordnet
+nltk.download('wordnet')
+print(wordnet.synsets("small"))
+
+# defination and example of the word 'computer'
+print(wordnet.synset("small.n.01").definition())
+
+# examples
+print("Examples:",wordnet.synset("small.n.01").examples())
+
+# get Antonyms
+print(wordnet.lemma('buy.v.01.buy').antonyms())
+
+##### Practical 3-B ######
+
+##### Aim: Study lemmas, hyponyms, hypernyms. #####
+
+import nltk
+from nltk.corpus import wordnet
+nltk.download('wordnet')
+print(wordnet.synsets("computer"))
+
+print(wordnet.synset("computer.n.01").lemma_names())
+
+# all lemmas for each synset.
+for e in wordnet.synsets("computer"):
+  print(f'{e} --> {e.lemma_names()}')
+
+# print all lemmas for a given synset.
+print(wordnet.synset('computer.n.01').lemmas())
+
+# get the synset corresponding to lemma
+print(wordnet.lemma('computer.n.01.computing_device').synset())
+
+# Get the name of the lemma.
+print(wordnet.lemma('computer.n.01.computing_device').name())
+
+# Hyponyms give abstract concepts of the word that are much more specific.
+# the list of hyponyms words of the computer
+syn = wordnet.synset('computer.n.01')
+print(syn.hyponyms)
+print([lemma.name() for synset in syn.hyponyms() for lemma in synset.lemmas()])
+
+# the semantic similarity in wordnet.
+vehicle = wordnet.synset('vehicle.n.01')
+car = wordnet.synset('car.n.01')
+print(car.lowest_common_hypernyms(vehicle))
+
+#hypernyms of a word
+synsets = wordnet.synsets('bike')
+
+# Find hypernyms for each synset
+hypernyms = []
+for synset in synsets:
+    for hypernym in synset.hypernyms():
+        hypernyms.append(hypernym)
+
+# Print the hypernyms
+print("Hypernyms of", word + ":")
+for hypernym in hypernyms:
+    print(hypernym)
+
+
+##### Practical 3-C ######
+
+##### Aim: sentence tokenization, word tokenization, Part of speech Tagging and chunking of user defined text. #####
+
+import nltk
+from nltk import tokenize
+nltk.download('punkt')
+
+from nltk import tag
+from nltk import chunk
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+
+#sent tok
+para = "Hello, I am Shlok. I am learning Natural Language Processing. Today is my NLP Exam."
+sents = tokenize.sent_tokenize(para)
+print("Sentence Tokenization : \n",sents)
+
+#word tok
+print("Word tokenization : \n") 
+for index in range(len(sents)): 
+  words = tokenize.word_tokenize(sents[index])
+  print(words)
+
+# POS Tagging 
+tagged_words = [] 
+
+for index in range(len(sents)): 
+    words = tokenize.word_tokenize(sents[index])
+    print(words)
+    tagged_words.append(tag.pos_tag(words)) 
+    
+print("\nPOS Tagging :  \n",tagged_words)
+    
+# chunking 
+tree = [] 
+for index in range(len(sents)): 
+    tree.append(chunk.ne_chunk(tagged_words[index])) 
+    
+print("chunking : \n") 
+print(tree)
+
+##### PRACTICAL NO.-4 ######
+
+##### Practical 4-A ######
+
+##### Aim: Named Entity recognition using user defined text. #####
+
+!pip install spacy
+
+!python -m spacy download en_core_web_sm
+
+import spacy
+
+# Load English tokenizer, tagger, parser and NER
+nlp = spacy.load("en_core_web_sm")
+
+# Process whole documents
+text = ("Kowloon Walled City was a densely populated and largely ungoverned enclave of China within the boundaries of Kowloon City, British Hong Kong."
+         "Built as an Imperial Chinese military fort, the walled city became a de jure enclave after the New Territories were"
+         "to the United Kingdom in 1898. Its population increased dramatically after the end of the Japanese occupation of Hong"
+         "Kong during World War II, attracting mostly refugees fleeing the renewed Chinese Civil War.")
+
+doc = nlp(text)
+
+# Analyse syntax
+print("Noun phrases:",[chunk.text for chunk in doc.noun_chunks])
+print("Verbs:", [token.lemma_ for token in doc if token.pos_ == "VERB"])
+
+
+##### Practical 4-B ######
+
+##### Aim: Named Entity recognition with diagram using NLTK corpus – treebank. #####
+
+!pip install nltk
+
+import nltk
+nltk.download('treebank')
+
+from nltk.corpus import treebank_chunk
+treebank_chunk.tagged_sents()[0]
+
+treebank_chunk.chunked_sents()[0]
+treebank_chunk.chunked_sents()[0].draw()
+
+
+##### PRACTICAL NO.-5 ######
+
+##### Practical 5-A ######
+
+##### Aim: Chart parsing using the string "Book that flight". #####
+
+import nltk
+from nltk import tokenize
+
+grammer1 = nltk.CFG.fromstring("""
+S -> VP
+        VP -> VP NP
+        NP -> Det NP
+        Det -> 'that'
+        NP -> singular Noun
+        NP -> 'flight'
+        VP -> 'Book'
+""")
+sentence = "Book that flight"
+
+import nltk
+nltk.download('punkt')
+
+for index in range(len(sentence)):
+    all_tokens = tokenize.word_tokenize(sentence)
+
+print(all_tokens)
+parser = nltk.ChartParser(grammer1)
+for tree in parser.parse(all_tokens):
+    print(tree)
+
+tree.draw()
+
+
+##### Practical 5-B ######
+
+##### Aim: Chart parsing using the string "I saw a bird in my balcony". #####
+
+import nltk
+from nltk import tokenize
+nltk.download('punkt')
+
+grammer1 = nltk.CFG.fromstring("""
+S -> NP VP
+PP -> P NP
+NP -> Det N | Det N PP | 'I'
+VP -> V NP | VP PP
+Det -> 'a' | 'my'
+N -> 'bird' | 'balcony'
+V -> 'saw'
+P -> 'in'
+""")
+
+sentence = "I saw a bird in my balcony"
+
+for index in range(len(sentence)):
+    all_tokens = tokenize.word_tokenize(sentence)
+print(all_tokens)
+
+parser = nltk.ChartParser(grammer1)
+for tree in parser.parse(all_tokens):
+    print(tree)
+    
+tree.draw()
+
+
+##### PRACTICAL NO.-6 ######
+
+##### Practical 6-A ######
+
+##### Aim: Analysing the meaning of sentence by querying a database. #####
+
+import nltk
+from nltk import load_parser
+
+nltk.download('book_grammars')
+nltk.data.show_cfg('grammars/book_grammars/sql0.fcfg')
+
+from nltk.parse import load_parser
+cp=load_parser('grammars/book_grammars/sql0.fcfg')
+query='What cities are located in China'
+trees=list(cp.parse(query.split()))
+print(trees)
+answer=trees[0].label()['SEM']
+print(answer)
+
+answer=[s for s in answer if s]
+
+query=' '.join(answer)
+print(query)
+
+#run the query
+from nltk.sem import chat80
+nltk.download('city_database')
+
+rows=chat80.sql_query('corpora/city_database/city.db',query)
+
+for cities in rows:
+    print (cities)
+
+##### Practical 6-B ######
+
+##### Aim: Building a Discourse Representation Theory (DRT) by parsing a string representation. #####
+
+import nltk
+read_the_expr=nltk.sem.DrtExpression.fromstring
+
+drs1=read_the_expr('([x,y],[Angus(x),dog(y),own(x,y)])')
+print(drs1)
+drs1.draw()
+
+print(drs1.fol())
+
+from nltk import load_parser
+parser = load_parser('grammars/book_grammars/drt.fcfg', logic_parser=nltk.sem.drt.DrtParser())
+trees = list(parser.parse('Angus owns a dog'.split()))
+print(trees[0].label()['SEM'].simplify())
+trees[0].draw()
+
+
+##### PRACTICAL NO.-7 ######
+
+##### Practical 7 ######
+
+##### Aim: Study PorterStemmer, LancasterStemmer, RegexpStemmer, SnowballStemmer and WordNetLemmatizer #####
+
+import nltk
+nltk.download('wordnet')
+
+#PorterStemmer
+import nltk
+from nltk.stem import PorterStemmer
+word_stemmer = PorterStemmer()
+print(word_stemmer.stem('writing'))
+
+#LancasterStemmer
+import nltk
+from nltk.stem import LancasterStemmer
+Lanc_stemmer = LancasterStemmer()
+print(Lanc_stemmer.stem('writing'))
+
+#RegexpStemmer
+import nltk
+from nltk.stem import RegexpStemmer
+Reg_stemmer = RegexpStemmer('ing$|s$|e$|able$', min=4)
+print(Reg_stemmer.stem('writing'))
+
+#SnowballStemmer
+import nltk
+from nltk.stem import SnowballStemmer
+english_stemmer = SnowballStemmer('english')
+print(english_stemmer.stem ('writing'))
+
+#WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+print("word :\tlemma") 
+print("rocks :", lemmatizer.lemmatize("rocks"))
+print("corpora :", lemmatizer.lemmatize("corpora"))
+
+#a denotes adjective in "pos"
+print("better :", lemmatizer.lemmatize("better", pos ="a"))
+
+
+
+
+##### PRACTICAL NO.-8 ######
+
+##### Practical 8-A ######
+
+##### Aim: a) Parse a sentence - "old men and women" and draw a tree using probabilistic parser #####
+
+import nltk
+from nltk import PCFG
+
+grammar = PCFG.fromstring('''
+NP -> NNS [0.5] | JJ NNS [0.3] | NP CC NP [0.2]
+NNS -> "men" [0.1] | "women" [0.2] | "children" [0.3] | NNS CC NNS [0.4]
+JJ -> "old" [0.4] | "young" [0.6]
+CC -> "and" [0.9] | "or" [0.1]
+''')
+
+print(grammar)
+viterbi_parser = nltk.ViterbiParser(grammar)
+token = "old men and women".split()
+obj = viterbi_parser.parse(token)
+
+print("Output: ")
+for x in obj:
+    print(x)
+
+
+##### Practical 8-B ######
+
+##### Aim: Parse a sentence - 'I saw a bird from my window.' and draw a tree using malt parsing. #####
+
+##### HINT:- #####
+
+Set the environment variable -> System Variable -> New -> 
+Variable Name:(MALT-PARSER) -> Variable Value:(C:\Users\lenovo\AppData\Local\Programs\Python\Python310\maltparser-1.7.2) 
+Variable Name:(MALT-MODEL) -> Variable Value:(C:\Users\lenovo\AppData\Local\Programs\Python\Python310\ engmalt.linear-1.7.mco)
+ 
+from nltk.parse import malt
+mp = malt.MaltParser('maltparser-1.7.2','engmalt.linear-1.7.mco')
+t = mp.parse_one('I saw a bird from my window.'.split()).tree()
+print(t)
+t.draw()
+
+
+
+
+
+##### PRACTICAL NO.-9 ######
+
+##### Practical 9-A #####
+
+##### Aim: Multiword Expressions in NLP for multiword – ‘New Delhi’ in '''Good cake cost Rs.1500\kg in New Delhi.  Please buy me one of them.\n\nThanks.''' #####
+
+import nltk
+nltk.download('punkt')
+
+from nltk.tokenize import MWETokenizer
+from nltk import sent_tokenize, word_tokenize
+
+s = '''Good cake cost Rs.1500\kg in New Delhi.  Please buy me one of them.\n\nThanks.'''
+mwe = MWETokenizer([('New', 'Delhi'), ('New', 'York'), ('Hong', 'Kong')], separator='_')
+for sent in sent_tokenize(s):
+    print(mwe.tokenize(word_tokenize(sent)))
+
+
+
+##### Practical 9-B #####
+
+##### Aim: Word Sense Disambiguation for the keyword ‘jam’ in the sentences - 'This device is used to jam the signal' and 'I am stuck in a traffic jam'. Also, for the keyword ‘book’ in the sentences - 'I love reading books on coding.' and 'The table was already booked by someone else.' #####
+
+from nltk.wsd import lesk
+from nltk.tokenize import word_tokenize
+
+import nltk
+nltk.download('punkt')
+nltk.download('wordnet')
+
+a1= lesk(word_tokenize('This device is used to jam the signal'),'jam')
+print(a1,a1.definition())
+a2 = lesk(word_tokenize('I am stuck in a traffic jam'),'jam')
+print(a2,a2.definition())
+
+b1=lesk(word_tokenize('I love reading books on coding.'),'book')
+print(b1,b1.definition())
+b2 = lesk(word_tokenize('The table was already booked by someone else.'),'book')
+print(b2,b2.definition())
+
+
+######## Indian Language ##########
+
+######## word tokenization in hindi#######
+
+!pip install torch==1.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+!pip install inltk
+!pip install tornado==4.5.3
+
+from inltk.inltk import setup
+#setup('hi')
+
+from inltk.inltk import tokenize
+hindi_text = """मेरा नाम श्लोक है"""
+
+# tokenize(input text, language code)
+tokenize(hindi_text, "hi")
+
+######### get similar sentences ########
+
+!pip install torch==1.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+!pip install inltk
+!pip install tornado==4.5.3
+
+from inltk.inltk import setupsetup('hi')
+from inltk.inltk import get_similar_sentences
+
+output = get_similar_sentences('मैंआज बहुि खशु ह ',ूं 5, 'hi')
+print(output)
+
+######## identify language ###############
+
+!pip install torch==1.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+!pip install inltk
+!pip install tornado==4.5.3
+
+from inltk.inltk import setup
+setup('ml')
+from inltk.inltk import identify_language
+
+identify_language('मेरा नाम श्लोक है')
+
+######## Tokenize using spaCy ##########
+
+import spacy
+
+# Load the English language model in spaCy
+nlp = spacy.load('en_core_web_sm')
+
+# Input text to be tokenized
+text = "Hello, how are you doing today?"
+
+# Tokenize the text using spaCy
+doc = nlp(text)
+
+# Access the individual tokens
+tokens = [token.text for token in doc]
+
+# Print the tokens
+print(tokens)
+
+
+########## tokenize using gensim #########
+
+from gensim.utils import tokenize
+
+# Input text to be tokenized
+text = "Hello, how are you doing today?"
+
+# Tokenize the text using gensim
+tokens = list(tokenize(text))
+
+# Print the tokens
+print(tokens)
